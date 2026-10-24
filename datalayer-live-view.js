@@ -14,8 +14,8 @@
   const SHOW_GTAG = true;    // false — hide gtag() calls
   const SHOW_SOURCE = false; // true — show the source of each push
   const FRAMES = 3;          // number of stack lines shown when SHOW_SOURCE = true
-  const PAUSE_ON_UNLOAD = false; // true — pause in the debugger before the page unloads (also on reload)
-
+  const PAUSE_ON_UNLOAD = false; // true — last resort: pauses before unload (also on reload), DevTools jumps to Sources
+  
   const COLORS = {           // bg — background color, fg — text color
     event: { bg: 'green',   fg: 'white' },
     gtm:   { bg: '#dbdbdb', fg: 'white' },
