@@ -1,12 +1,14 @@
 # Changelog
 
-
 ## [0.91] — 2026-10-24
 
 ### Added
 
 - `PAUSE_ON_UNLOAD` option: pauses in the DevTools debugger (`debugger;` in a `beforeunload` handler) before the page navigates away; off by default, a last-resort option that also pauses on page reload
-- `Map` and `Set` support in snapshots, including circular references inside them, marked `[circular]`
+
+### Fixed
+
+- `Map` and `Set` in snapshots were logged as empty objects (`{}`); they are now copied as `Map` / `Set`, with circular references inside them marked `[circular]`
 
 ## [0.9] — 2026-09-30
 
