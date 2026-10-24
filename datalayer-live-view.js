@@ -1,6 +1,6 @@
 /**
  * dataLayer Live View
- * Version: 0.9
+ * Version: 0.91
  * A lightweight DevTools script for real-time monitoring and debugging of dataLayer pushes.
  *
  * @author  dgizdevans
@@ -14,6 +14,7 @@
   const SHOW_GTAG = true;    // false — hide gtag() calls
   const SHOW_SOURCE = false; // true — show the source of each push
   const FRAMES = 3;          // number of stack lines shown when SHOW_SOURCE = true
+  const PAUSE_ON_UNLOAD = false; // true — pause in the debugger before the page unloads (also on reload)
 
   const COLORS = {           // bg — background color, fg — text color
     event: { bg: 'green',   fg: 'white' },
@@ -23,6 +24,11 @@
   };
 
   // ==================== CORE (do not edit) ====================
+
+  const UNLOAD_KEY = '__dlUnloadPause';
+  if (window[UNLOAD_KEY]) window.removeEventListener('beforeunload', window[UNLOAD_KEY]);
+  window[UNLOAD_KEY] = PAUSE_ON_UNLOAD ? () => { debugger; } : null;
+  if (window[UNLOAD_KEY]) window.addEventListener('beforeunload', window[UNLOAD_KEY]);
 
   const dl = window[DL_NAME];
   if (!dl || dl.__pushOvr) return;
@@ -43,6 +49,18 @@
     if (v instanceof Date) return new Date(v.getTime());
     if (path.has(v)) return '[circular]';
     path.add(v);
+    if (v instanceof Map) {
+      const m = new Map();
+      v.forEach((val, key) => m.set(clone(key, path), clone(val, path)));
+      path.delete(v);
+      return m;
+    }
+    if (v instanceof Set) {
+      const s = new Set();
+      v.forEach(val => s.add(clone(val, path)));
+      path.delete(v);
+      return s;
+    }
     const out = Array.isArray(v) ? [] : {};
     for (const k of Object.keys(v)) {
       try { out[k] = clone(v[k], path); } catch (e) { out[k] = '[unreadable]'; }
